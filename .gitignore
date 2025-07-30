@@ -4,3 +4,4 @@
 uploads/*
 tmp/*
 /generated/prisma
+/node_modules
