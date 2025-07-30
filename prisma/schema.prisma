@@ -1,0 +1,189 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ClaimStatus {
+  DRAFT
+  PENDING_APPROVER_REVIEW
+  PENDING_INSURER_REVIEW
+  AWAITING_EVIDENCE
+  PENDING_INSURER_FORM
+  PENDING_MANAGER_REVIEW
+  PENDING_USER_CONFIRM
+  AWAITING_SIGNATURES
+  COMPLETED
+  REJECTED
+}
+
+enum AttachmentType {
+  DAMAGE_IMAGE
+  ESTIMATE_DOC
+  OTHER_DOCUMENT
+  USER_CONFIRM_DOC
+  INSURANCE_DOC
+}
+
+enum Role {
+  USER
+  MANAGER
+  INSURANCE
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  employeeNumber String   @unique
+  name           String
+  department     String?
+  role           Role     @default(USER)
+  position       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  claimsCreated Claim[] @relation("ClaimsCreated")
+}
+
+model Claim {
+  id            String @id @default(uuid())
+  docNum        String @unique
+  createdByName String
+  approverName  String
+  approverPosition String
+  approverDepartment String
+  createdById   String
+  approverEmail  String
+  createdBy     User   @relation("ClaimsCreated", fields: [createdById], references: [id])
+  approverId    String
+  signerId            String?
+  signerEmail         String?
+  signerName          String?
+  signerPosition      String?
+  status         ClaimStatus @default(DRAFT)
+  categoryMain   String?
+  categorySub    String?
+  submittedAt    DateTime?
+  insurerComment String?
+  attachments Attachment[] @relation("ClaimAttachments")
+  cpmForm     CPMForm?
+  fppa04Base  Fppa04Base?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  history      ClaimHistory[]
+}
+
+model Attachment {
+  id         String         @id @default(cuid())
+  claimId    String
+  type       AttachmentType
+  fileName   String
+  url        String
+  uploadedAt DateTime       @default(now())
+
+  claim Claim @relation("ClaimAttachments", fields: [claimId], references: [id])
+}
+
+model CPMForm {
+  claimId String @id
+  claim   Claim  @relation(fields: [claimId], references: [id])
+
+  accidentDate       DateTime
+  accidentTime       String
+  location           String
+  cause              String
+  repairShop         String?
+  repairShopLocation String?
+
+  policeDate    DateTime?
+  policeTime    String?
+  policeStation String?
+
+  damageOwnType  String
+  damageOtherOwn String?
+  damageDetail   String?
+  damageAmount   Float?
+  victimDetail   String?
+
+  partnerName         String?
+  partnerPhone        String?
+  partnerLocation     String?
+  partnerDamageDetail String?
+  partnerDamageAmount Float?
+  partnerVictimDetail String?
+  phoneNum String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Fppa04Base {
+  id       String @id @default(cuid())
+  claimId  String @unique
+  mainType String
+  subType  String
+  claim    Claim  @relation(fields: [claimId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cpmVariant Fppa04CPM?
+}
+
+model Fppa04CPM {
+  baseId String     @id
+  base   Fppa04Base @relation(fields: [baseId], references: [id])
+
+  eventType         String
+  claimRefNumber    String
+  eventDescription  String
+  productionYear    Int
+  accidentDate      DateTime
+  reportedDate      DateTime
+  receivedDocDate   DateTime
+  company           String
+  factory           String
+  policyNumber      String
+  surveyorRefNumber String
+  insurancePayout   Float
+  netAmount         Float
+  signatureFiles    String[]
+
+  items       Fppa04ItemCPM[]       @relation("Fppa04CPMItems")
+  adjustments Fppa04AdjustmentCPM[] @relation("Fppa04CPMAdjustments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Fppa04ItemCPM {
+  id      String    @id @default(cuid())
+  baseId  String
+  variant Fppa04CPM @relation("Fppa04CPMItems", fields: [baseId], references: [baseId])
+
+  category    String
+  description String
+  total       Float
+  exception   Float
+}
+
+model Fppa04AdjustmentCPM {
+  id      String    @id @default(cuid())
+  baseId  String
+  variant Fppa04CPM @relation("Fppa04CPMAdjustments", fields: [baseId], references: [baseId])
+
+  type        String
+  description String
+  amount      Float
+}
+model ClaimHistory {
+  id        String      @id @default(uuid())
+  claim     Claim       @relation(fields:[claimId], references:[id])
+  claimId   String
+  status    ClaimStatus
+  createdAt DateTime    @default(now())  // when it moved into `status`
+  @@unique([claimId, status])
+}
