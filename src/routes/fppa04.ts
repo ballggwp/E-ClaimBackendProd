@@ -18,7 +18,13 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024,  // 50 MB ต่อไฟล์
+    files:    10                 // สูงสุด 10 ไฟล์ ต่อ request (ปรับตามต้องการ)
+  }
+});
 
 // POST   /api/fppa04            → create base
 // GET    /api/fppa04/:id        → read base + variant+items+adjustments

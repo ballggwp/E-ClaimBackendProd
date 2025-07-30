@@ -5,7 +5,13 @@ import * as claimCtl from "../controllers/claimController";
 import { ensureAuth, ensureRole } from "../middleware/authMiddleware";
 import {  updateSigner,uploadAttachments } from "../controllers/claimController";
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
+const upload = multer({
+  dest: "uploads/",
+  limits: {
+    fileSize: 50 * 1024 * 1024,    // 50 MB ต่อไฟล์
+    files: 10,                     // (ถ้าต้องการ) จำนวนไฟล์สูงสุด
+  },
+});
 // List & filter claims
 router.get(
   "/",
