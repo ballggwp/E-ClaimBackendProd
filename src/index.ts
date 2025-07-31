@@ -36,6 +36,7 @@ app.use(
     useTempFiles:   true,
     tempFileDir:    path.join(process.cwd(), "tmp"), // or your choice
     createParentPath: true,
+    limits: { fileSize: 50 * 1024 * 1024 }
   })
 );
 app.use('/api/userinfo', authMiddleware, userinfoRouter)
