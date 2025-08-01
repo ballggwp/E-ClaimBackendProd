@@ -4,7 +4,7 @@ exports.getUserInfo = void 0;
 const authController_1 = require("./authController");
 const getUserInfo = async (req, res, next) => {
     try {
-        console.log("↗️  GET /api/userinfo?keyword=", req.query.keyword);
+        //console.log("↗️  GET /api/userinfo?keyword=", req.query.keyword);
         const keyword = String(req.query.keyword || "");
         if (!keyword) {
             res.status(400).json({ message: "Missing keyword" });
@@ -12,7 +12,7 @@ const getUserInfo = async (req, res, next) => {
         }
         // upstream returns e.g. [{ id, name, email, positionName }]
         const raw = await (0, authController_1.fetchUserInfoProfilesByKeyword)(keyword);
-        console.log("↗️  upstream returned", raw.length, "profiles");
+        //console.log("↗️  upstream returned", raw.length, "profiles");
         // map to a flat shape for the client
         const profiles = raw.map((p) => ({
             department: p.department?.name.th || p.department?.name.en || p.departmentName,

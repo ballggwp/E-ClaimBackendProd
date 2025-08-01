@@ -154,7 +154,7 @@ export const createClaim: RequestHandler = async (req, res, next) => {
     }
 
     const createdByName = req.user!.name!;
-    console.log(createdById, createdByName);
+    //console.log(createdById, createdByName);
     const today = new Date();
     const ymd = format(today, "yyMMdd");
     const prefix = `${categorySub}${ymd}`;
@@ -233,7 +233,7 @@ export const createClaim: RequestHandler = async (req, res, next) => {
           `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claim/claims/${categorySub?.toLowerCase()}/${newClaimId}">คลิกที่นี่</a></p>`,
         ].join("\n"),
       };
-      console.log("📧 Sending mail payload:", mailPayload);
+      //console.log("📧 Sending mail payload:", mailPayload);
 
       // ↓ include protocol!
       const token = await fetchAzureTokenEmail();
@@ -248,7 +248,7 @@ export const createClaim: RequestHandler = async (req, res, next) => {
             },
           }
         );
-      console.log(`✉️  Mail API responded `);
+      //console.log(`✉️  Mail API responded `);
     }
 
     res.status(201).json({ success: true, claim });
@@ -405,7 +405,7 @@ export const updateClaim: RequestHandler = async (req, res, next) => {
           `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claims/${categorySub?.toLowerCase()}/${id}">คลิกที่นี่</a></p>`,
         ].join("\n"),
       };
-      console.log("📧 Sending mail payload:", mailPayload);
+      //console.log("📧 Sending mail payload:", mailPayload);
 
       const token = await fetchAzureTokenEmail();
         await axios.post(
@@ -534,9 +534,7 @@ export const claimAction: RequestHandler = async (req, res, next) => {
             },
           }
         );
-          console.log(
-            `✉️ Notification email sent to creator (${creator.email}) CC approver (${approverEmail})`
-          );
+          //console.log(`✉️ Notification email sent to creator (${creator.email}) CC approver (${approverEmail})`);
         } catch (mailErr) {
           console.error("❌ Failed to send notification email:", mailErr);
         }
@@ -615,7 +613,7 @@ export const ManagerAction: RequestHandler = async (req, res, next) => {
         };
         try {
           await sendEmail(mailPayload);
-          console.log("✉️ Manager approval email sent to user:", user.email);
+          //console.log("✉️ Manager approval email sent to user:", user.email);
         } catch (mailErr) {
           console.error("❌ Failed to send manager approval email:", mailErr);
         }
@@ -635,7 +633,7 @@ export const ManagerAction: RequestHandler = async (req, res, next) => {
       };
       try {
         await sendEmail(mailPayload);
-        console.log("✉️ Manager rejection email sent to insurance:", approverEmail);
+        //console.log("✉️ Manager rejection email sent to insurance:", approverEmail);
       } catch (mailErr) {
         console.error("❌ Failed to send manager rejection email:", mailErr);
       }
@@ -721,12 +719,7 @@ export const createCpmForm: RequestHandler = async (req, res, next) => {
 
     // Next, process and save attachments
     // Log each uploaded file object
-    damageFiles.forEach((f) => console.log("Uploaded damage file object:", f));
-    estimateFiles.forEach((f) =>
-      console.log("Uploaded estimate file object:", f)
-    );
-    otherFiles.forEach((f) => console.log("Uploaded other file object:", f));
-
+    
     // inside createCpmForm, after you've saved the CPM form...
     const attachCreates = [
       // DAMAGE_IMAGE
@@ -941,7 +934,7 @@ export const updateCpmForm: RequestHandler = async (req, res, next) => {
           `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claim/claims/${db.categorySub?.toLowerCase()}/${claimId}">คลิกที่นี่</a></p>`,
         ].join("\n"),
       };
-      console.log("📧 Sending mail payload:", mailPayload);
+      //console.log("📧 Sending mail payload:", mailPayload);
 
       const token = await fetchAzureTokenEmail();
         await axios.post(
@@ -1099,7 +1092,7 @@ export const updateSigner: RequestHandler = async (req, res, next) => {
 };
 
 export const userConfirm: RequestHandler = async (req, res, next) => {
-  console.log("→ [userConfirm] invoked", { body: req.body, files: req.files });
+  //console.log("→ [userConfirm] invoked", { body: req.body, files: req.files });
   try {
     const { action, comment } = req.body as {
       action: "confirm" | "reject";
@@ -1179,7 +1172,7 @@ export const userConfirm: RequestHandler = async (req, res, next) => {
       };
       try {
         await sendEmail(mailPayload);
-        console.log("✉️ Sent user action email to insurance team");
+        //console.log("✉️ Sent user action email to insurance team");
       } catch (e) {
         console.error("❌ Failed to send user action email:", e);
       }
@@ -1196,7 +1189,7 @@ export const userConfirm: RequestHandler = async (req, res, next) => {
 // ─── List Attachments by Claim ─────────────────────────────────────────────
 export const listAttachments: RequestHandler = async (req, res, next) => {
   const claimId = req.params.id;
-  console.log(claimId);
+  //console.log(claimId);
   try {
     const attachments = await prisma.attachment.findMany({
       where: { claimId },
@@ -1212,7 +1205,7 @@ export const listAttachments: RequestHandler = async (req, res, next) => {
     });
     // send back only this claim’s attachments
     res.json(attachments);
-    console.log(attachments);
+    //console.log(attachments);
   } catch (err: any) {
     console.error("listAttachments error:", err);
     res.status(500).json({ message: "ไม่สามารถโหลดไฟล์ได้" });

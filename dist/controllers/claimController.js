@@ -123,7 +123,7 @@ const createClaim = async (req, res, next) => {
             return;
         }
         const createdByName = req.user.name;
-        console.log(createdById, createdByName);
+        //console.log(createdById, createdByName);
         const today = new Date();
         const ymd = (0, date_fns_1.format)(today, "yyMMdd");
         const prefix = `${categorySub}${ymd}`;
@@ -196,7 +196,7 @@ const createClaim = async (req, res, next) => {
                     `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claims/${categorySub?.toLowerCase()}/${newClaimId}">คลิกที่นี่</a></p>`,
                 ].join("\n"),
             };
-            console.log("📧 Sending mail payload:", mailPayload);
+            //console.log("📧 Sending mail payload:", mailPayload);
             // ↓ include protocol!
             const token = await fetchAzureTokenEmail();
             await axios_1.default.post("https://mitrservices-internal.mitrphol.com/utility/api/v2/email", mailPayload, {
@@ -206,7 +206,7 @@ const createClaim = async (req, res, next) => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log(`✉️  Mail API responded `);
+            //console.log(`✉️  Mail API responded `);
         }
         res.status(201).json({ success: true, claim });
     }
@@ -343,7 +343,7 @@ const updateClaim = async (req, res, next) => {
               `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claims/${categorySub?.toLowerCase()}/${id}">คลิกที่นี่</a></p>`,
             ].join("\n"),
           };
-          console.log("📧 Sending mail payload:", mailPayload);
+          //console.log("📧 Sending mail payload:", mailPayload);
     
           const token = await fetchAzureTokenEmail();
             await axios.post(
@@ -455,7 +455,7 @@ const claimAction = async (req, res, next) => {
                             "Content-Type": "application/json",
                         },
                     });
-                    console.log(`✉️ Notification email sent to creator (${creator.email}) CC approver (${approverEmail})`);
+                    //console.log(`✉️ Notification email sent to creator (${creator.email}) CC approver (${approverEmail})`);
                 }
                 catch (mailErr) {
                     console.error("❌ Failed to send notification email:", mailErr);
@@ -526,7 +526,7 @@ const ManagerAction = async (req, res, next) => {
                 };
                 try {
                     await sendEmail(mailPayload);
-                    console.log("✉️ Manager approval email sent to user:", user.email);
+                    //console.log("✉️ Manager approval email sent to user:", user.email);
                 }
                 catch (mailErr) {
                     console.error("❌ Failed to send manager approval email:", mailErr);
@@ -548,7 +548,7 @@ const ManagerAction = async (req, res, next) => {
             };
             try {
                 await sendEmail(mailPayload);
-                console.log("✉️ Manager rejection email sent to insurance:", approverEmail);
+                //console.log("✉️ Manager rejection email sent to insurance:", approverEmail);
             }
             catch (mailErr) {
                 console.error("❌ Failed to send manager rejection email:", mailErr);
@@ -608,9 +608,9 @@ const createCpmForm = async (req, res, next) => {
         });
         // Next, process and save attachments
         // Log each uploaded file object
-        damageFiles.forEach((f) => console.log("Uploaded damage file object:", f));
-        estimateFiles.forEach((f) => console.log("Uploaded estimate file object:", f));
-        otherFiles.forEach((f) => console.log("Uploaded other file object:", f));
+        damageFiles.forEach((f) => //console.log("Uploaded damage file object:", f));
+        estimateFiles.forEach((f) => //console.log("Uploaded estimate file object:", f));
+        otherFiles.forEach((f) => //console.log("Uploaded other file object:", f));
         // inside createCpmForm, after you've saved the CPM form...
         const attachCreates = [
             // DAMAGE_IMAGE
@@ -792,7 +792,7 @@ const updateCpmForm = async (req, res, next) => {
                     `<p>กรุณาตรวจสอบรายละเอียดเพิ่มเติมที่ระบบ: <a href="${process.env.FE_PORT}/claims/${db.categorySub?.toLowerCase()}/${claimId}">คลิกที่นี่</a></p>`,
                 ].join("\n"),
             };
-            console.log("📧 Sending mail payload:", mailPayload);
+            //console.log("📧 Sending mail payload:", mailPayload);
             const token = await fetchAzureTokenEmail();
             await axios_1.default.post("https://mitrservices-internal.mitrphol.com/utility/api/v2/email", mailPayload, {
                 headers: {
@@ -922,7 +922,7 @@ const updateSigner = async (req, res, next) => {
 };
 exports.updateSigner = updateSigner;
 const userConfirm = async (req, res, next) => {
-    console.log("→ [userConfirm] invoked", { body: req.body, files: req.files });
+    //console.log("→ [userConfirm] invoked", { body: req.body, files: req.files });
     try {
         const { action, comment } = req.body;
         // now req.files is an array of Multer.File
@@ -991,7 +991,7 @@ const userConfirm = async (req, res, next) => {
             };
             try {
                 await sendEmail(mailPayload);
-                console.log("✉️ Sent user action email to insurance team");
+                //console.log("✉️ Sent user action email to insurance team");
             }
             catch (e) {
                 console.error("❌ Failed to send user action email:", e);
@@ -1008,7 +1008,7 @@ exports.userConfirm = userConfirm;
 // ─── List Attachments by Claim ─────────────────────────────────────────────
 const listAttachments = async (req, res, next) => {
     const claimId = req.params.id;
-    console.log(claimId);
+    //console.log(claimId);
     try {
         const attachments = await prisma_1.default.attachment.findMany({
             where: { claimId },
@@ -1024,7 +1024,7 @@ const listAttachments = async (req, res, next) => {
         });
         // send back only this claim’s attachments
         res.json(attachments);
-        console.log(attachments);
+        //console.log(attachments);
     }
     catch (err) {
         console.error("listAttachments error:", err);

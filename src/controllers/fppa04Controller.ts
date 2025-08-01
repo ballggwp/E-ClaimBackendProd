@@ -13,7 +13,7 @@ export const createFppa04Base: RequestHandler = async (req, res, next) => {
       categoryMain: string
       categorySub: string
     }
-    console.log(claimId,categoryMain,categorySub)
+    //console.log(claimId,categoryMain,categorySub)
     if (!claimId || !categoryMain || !categorySub) {
       res.status(400).json({ message: 'claimId, categoryMain and categorySub are required' });
       return;
@@ -289,7 +289,7 @@ export const createFppa04Cpm: RequestHandler = async (req, res, next) => {
             },
           }
         );
-        console.log("✉️ Approval notification sent to manager:");
+        //console.log("✉️ Approval notification sent to manager:");
       } catch (mailErr) {
         console.error("❌ Failed to send approval email:", mailErr);
       }

@@ -12,7 +12,7 @@ const claimController_1 = require("./claimController");
 const createFppa04Base = async (req, res, next) => {
     try {
         const { claimId, categoryMain, categorySub } = req.body;
-        console.log(claimId, categoryMain, categorySub);
+        //console.log(claimId, categoryMain, categorySub);
         if (!claimId || !categoryMain || !categorySub) {
             res.status(400).json({ message: 'claimId, categoryMain and categorySub are required' });
             return;
@@ -224,7 +224,7 @@ const createFppa04Cpm = async (req, res, next) => {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("✉️ Approval notification sent to manager:");
+            //console.log("✉️ Approval notification sent to manager:");
         }
         catch (mailErr) {
             console.error("❌ Failed to send approval email:", mailErr);

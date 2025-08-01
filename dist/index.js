@@ -37,4 +37,4 @@ app.use((0, express_fileupload_1.default)({
 }));
 app.use('/api/userinfo', authMiddleware_1.default, userinfo_1.default);
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server on ${PORT}`));
+app.listen(PORT, () => //console.log(`Server on ${PORT}`));
